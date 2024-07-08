@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,13 +41,20 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        resetBoard();
+        findViewById(R.id.restartButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPlayerChoiceDialog();
+            }
+        });
+
+        resetBoard(Player.PLAYER_X);
     }
 
-    private void resetBoard() {
-        currentPlayer = Player.PLAYER_X;
+    private void resetBoard(Player startingPlayer) {
+        currentPlayer = startingPlayer;
         gameActive = true;
-        statusTextView.setText("Player X's Turn");
+        statusTextView.setText((startingPlayer == Player.PLAYER_X ? "Player X's" : "Player O's") + " Turn");
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
@@ -129,5 +138,24 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+
+    private void showPlayerChoiceDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Choose Starting Player");
+
+        builder.setItems(new CharSequence[]{"Player X", "Player O"}, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == 0) {
+                    resetBoard(Player.PLAYER_X);
+                } else {
+                    resetBoard(Player.PLAYER_O);
+                    cpuMove();
+                }
+            }
+        });
+
+        builder.show();
     }
 }
