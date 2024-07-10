@@ -2,6 +2,8 @@ package com.example.tic_tac_toe_android_game;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
@@ -59,10 +61,13 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 board[i][j] = Player.NONE;
-                ((Button) gridLayout.getChildAt(i * 3 + j)).setText("");
+                Button button = (Button) gridLayout.getChildAt(i * 3 + j);
+                button.setText("");
+                button.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fade_in));
             }
         }
     }
+
 
     private void onGridButtonClick(int index) {
         if (!gameActive) return;
@@ -72,7 +77,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (board[row][col] == Player.NONE) {
             board[row][col] = currentPlayer;
-            ((Button) gridLayout.getChildAt(index)).setText(currentPlayer == Player.PLAYER_X ? "X" : "O");
+            Button button = (Button) gridLayout.getChildAt(index);
+            button.setText(currentPlayer == Player.PLAYER_X ? "X" : "O");
+
+            // Apply the animation
+            Animation animation = AnimationUtils.loadAnimation(this, R.anim.button_click);
+            button.startAnimation(animation);
 
             if (checkWin()) {
                 gameActive = false;
@@ -158,4 +168,5 @@ public class MainActivity extends AppCompatActivity {
 
         builder.show();
     }
+
 }
